@@ -2,6 +2,7 @@
   /*
     全页面行距参数：
     1.25 = 1.25 倍行距
+    可以修改为 1.3、1.4、1.5 等
   */
   :root {
     --page-line-height: 1.25;
@@ -43,23 +44,41 @@
     line-height: var(--page-line-height);
   }
 
-  /* 作者姓名图标组 */
+  /*
+    作者姓名后面的图标组。
+
+    margin-left：
+    控制作者姓名与左括号之间的空格。
+
+    margin-right：
+    控制右括号与后面的逗号、and 或年份之间的空格。
+  */
   .author-links {
     display: inline-flex;
     align-items: center;
-    gap: 0.2em;
-    margin-left: 0.12em;
+    margin-left: 0.25em;
+    margin-right: 0.25em;
     font-style: normal;
     white-space: nowrap;
     vertical-align: -0.08em;
   }
 
-  .author-links::before {
-    content: "(";
+  /*
+    图标后面的逗号与前一个图标之间留空格。
+  */
+  .author-link-separator {
+    display: inline-block;
+    margin-left: 0.2em;
+    font-family: "Times New Roman", Times, serif;
+    font-style: normal;
+    line-height: 1;
   }
 
-  .author-links::after {
-    content: ")";
+  /*
+    逗号与后一个图标之间留空格。
+  */
+  .author-link-separator + .profile-icon-link {
+    margin-left: 0.2em;
   }
 
   /* =========================
@@ -103,62 +122,6 @@
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-
-  /* =========================
-     Collaborators
-     ========================= */
-
-  .collaborator-section {
-    margin-top: 35px;
-  }
-
-  .collaborator-list {
-    list-style: none;
-    padding-left: 0;
-    margin-left: 0;
-  }
-
-  .collaborator-item {
-    margin-bottom: 0.8em;
-    line-height: var(--page-line-height);
-  }
-
-  .collaborator-name {
-    font-family: "Times New Roman", Times, serif;
-    font-weight: bold;
-  }
-
-  .collaborator-links {
-    display: inline-flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.8em;
-    margin-left: 0.5em;
-  }
-
-  .collaborator-profile-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25em;
-    color: inherit;
-  }
-
-  .collaborator-profile-link .profile-icon {
-    width: 0.9em;
-    height: 0.9em;
-  }
-
-  /* =========================
-     Mobile display
-     ========================= */
-
-  @media (max-width: 600px) {
-    .collaborator-links {
-      display: flex;
-      margin-top: 0.25em;
-      margin-left: 0;
-    }
-  }
 </style>
 
 
@@ -172,7 +135,7 @@
   assets/icons/researchgate_icon.png
   assets/icons/orcid_icon.png
 
-  只有对应 PNG 加载失败时，才会显示这些 SVG。
+  只有对应 PNG 加载失败时，才会显示备用 SVG。
 -->
 <svg
   aria-hidden="true"
@@ -555,25 +518,6 @@
   </ul>
 
 
-  <!--
-    Collaborators 板块由 JavaScript 自动生成。
-    如果所有合作者的链接都是空的，
-    整个 Collaborators 板块不会显示。
-  -->
-  <section
-    id="collaborator-section"
-    class="collaborator-section"
-    hidden
-  >
-    <h2>Collaborators</h2>
-
-    <ul
-      id="collaborator-list"
-      class="collaborator-list"
-    ></ul>
-  </section>
-
-
   <p>
     If you have any critical comments regarding my work, please do not
     hesitate to contact me via the email address below:
@@ -623,14 +567,15 @@
 
 <script>
   /*
-    在这里是每位合作者的真实链接。
+    每位合作者的个人资料链接：
+
     institution：机构个人主页
     scholar：Google Scholar
     researchgate：ResearchGate
     orcid：ORCID
+
     某个链接留空时，对应图标不会显示。
-    至少填写一个链接后，该合作者才会显示图标，
-    并出现在 Collaborators 板块。
+    所有链接都为空时，该作者姓名后不显示括号。
   */
 
   const collaborators = {
@@ -756,41 +701,32 @@
 
 
   /*
-    图标路径
     GitHub Pages 区分文件名大小写，
-    需与仓库里的文件名完全一致：
-    assets/icons/Institution_icon.png
-    assets/icons/google scholar_icon.png
-    assets/icons/researchgate_icon.png
-    assets/icons/orcid_icon.png
+    以下路径必须与仓库中的文件名完全一致。
   */
 
   const linkTypes = [
     {
       key: "institution",
       label: "Institutional profile",
-      text: "Institutional profile",
       png: "assets/icons/Institution_icon.png",
       fallback: "fallback-institution"
     },
     {
       key: "scholar",
       label: "Google Scholar",
-      text: "Google Scholar",
       png: "assets/icons/google scholar_icon.png",
       fallback: "fallback-scholar"
     },
     {
       key: "researchgate",
       label: "ResearchGate",
-      text: "ResearchGate",
       png: "assets/icons/researchgate_icon.png",
       fallback: "fallback-researchgate"
     },
     {
       key: "orcid",
       label: "ORCID",
-      text: "ORCID",
       png: "assets/icons/orcid_icon.png",
       fallback: "fallback-orcid"
     }
@@ -798,7 +734,7 @@
 
 
   /*
-    创建备用 SVG 图标。
+    创建 PNG 加载失败时使用的备用 SVG。
   */
 
   function createFallbackSvg(symbolId) {
@@ -829,7 +765,7 @@
     );
 
     /*
-      用于兼容部分旧浏览器。
+      兼容部分旧浏览器。
     */
     use.setAttributeNS(
       xlinkNamespace,
@@ -844,9 +780,10 @@
 
 
   /*
-    创建 PNG 图标
-    如果 PNG 文件不存在、路径错误或加载失败
-    自动替换为相应的内嵌 SVG
+    创建 PNG 图标。
+
+    如果 PNG 不存在、路径错误或加载失败，
+    自动替换为对应的备用 SVG。
   */
 
   function createProfileIcon(type) {
@@ -859,8 +796,7 @@
     image.setAttribute("aria-hidden", "true");
 
     /*
-      先设置 error 监听器再设置 src
-      即使图片立即加载失败也能切换备用 SVG
+      先注册 error 事件，再设置 src。
     */
     image.addEventListener(
       "error",
@@ -877,8 +813,8 @@
     );
 
     /*
-      encodeURI处理文件名中的空格
-      例如 google scholar_icon.png
+      encodeURI 会处理文件名中的空格，
+      例如 google scholar_icon.png。
     */
     image.src = encodeURI(type.png);
 
@@ -887,17 +823,13 @@
 
 
   /*
-    创建可点击的个人资料链接
+    创建一个可点击的图标链接。
   */
 
-  function createProfileLink(
-    name,
-    type,
-    url,
-    showText
-  ) {
+  function createProfileLink(name, type, url) {
     const link = document.createElement("a");
 
+    link.className = "profile-icon-link";
     link.href = url;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
@@ -910,35 +842,19 @@
       name + " — " + type.label
     );
 
-    if (showText) {
-      link.className =
-        "profile-icon-link collaborator-profile-link";
-    } else {
-      link.className = "profile-icon-link";
-    }
-
     link.appendChild(
       createProfileIcon(type)
     );
-
-    /*
-      论文作者行只显示图标
-      Collaborators 板块显示图标和文字
-    */
-    if (showText) {
-      const text = document.createElement("span");
-
-      text.textContent = type.text;
-
-      link.appendChild(text);
-    }
 
     return link;
   }
 
 
-  /
+  /*
     获取某位合作者已经填写的有效链接。
+
+    注意：
+    这里必须是 /* 开头，而不能只写一个 /。
   */
 
   function getAvailableLinks(information) {
@@ -954,9 +870,19 @@
 
 
   /*
-    在论文作者姓名后加入图标：
-    Author Name
-    (Institution Google Scholar ResearchGate ORCID)
+    在论文作者姓名后加入图标。
+
+    显示形式：
+
+    Name (logo , logo , logo) ,
+
+    如果只有一个链接：
+
+    Name (logo) ,
+
+    如果所有链接为空：
+
+    Name,
   */
 
   document
@@ -973,8 +899,8 @@
         getAvailableLinks(information);
 
       /*
-        所有链接都为空时
-        不显示括号和图标
+        所有链接都为空时，
+        不显示括号和图标。
       */
       if (availableLinks.length === 0) {
         return;
@@ -985,101 +911,53 @@
 
       group.className = "author-links";
 
-      availableLinks.forEach(function (type) {
-        const profileLink = createProfileLink(
-          name,
-          type,
-          information[type.key],
-          false
-        );
+      /*
+        添加左括号。
+      */
+      group.appendChild(
+        document.createTextNode("(")
+      );
+
+      availableLinks.forEach(function (type, index) {
+        /*
+          从第二个图标开始，
+          在前面添加带间隔的逗号。
+        */
+        if (index > 0) {
+          const separator =
+            document.createElement("span");
+
+          separator.className =
+            "author-link-separator";
+
+          separator.textContent = ",";
+
+          group.appendChild(separator);
+        }
+
+        const profileLink =
+          createProfileLink(
+            name,
+            type,
+            information[type.key]
+          );
 
         group.appendChild(profileLink);
       });
 
+      /*
+        添加右括号。
+      */
+      group.appendChild(
+        document.createTextNode(")")
+      );
+
+      /*
+        将图标组插入作者姓名后面。
+      */
       author.insertAdjacentElement(
         "afterend",
         group
       );
     });
-
-
-  /*
-    自动生成 Collaborators 板块
-  */
-
-  const collaboratorSection =
-    document.getElementById(
-      "collaborator-section"
-    );
-
-  const collaboratorList =
-    document.getElementById(
-      "collaborator-list"
-    );
-
-  let displayedCollaborators = 0;
-
-  Object.entries(collaborators).forEach(
-    function (entry) {
-      const name = entry[0];
-      const information = entry[1];
-
-      const availableLinks =
-        getAvailableLinks(information);
-
-      /*
-        没有填写任何链接的合作者不显示
-      */
-      if (availableLinks.length === 0) {
-        return;
-      }
-
-      displayedCollaborators += 1;
-
-      const item =
-        document.createElement("li");
-
-      item.className = "collaborator-item";
-
-      const nameElement =
-        document.createElement("span");
-
-      nameElement.className =
-        "collaborator-name";
-
-      nameElement.textContent = name;
-
-      const linksElement =
-        document.createElement("span");
-
-      linksElement.className =
-        "collaborator-links";
-
-      availableLinks.forEach(function (type) {
-        const profileLink = createProfileLink(
-          name,
-          type,
-          information[type.key],
-          true
-        );
-
-        linksElement.appendChild(profileLink);
-      });
-
-      item.appendChild(nameElement);
-      item.appendChild(linksElement);
-
-      collaboratorList.appendChild(item);
-    }
-  );
-
-
-  /*
-    至少有一位合作者填写链接时
-    才显示整个 Collaborators 板块
-  */
-
-  if (displayedCollaborators > 0) {
-    collaboratorSection.hidden = false;
-  }
 </script>
