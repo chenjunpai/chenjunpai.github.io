@@ -1,3 +1,11 @@
+<script>
+  /*
+    合作者链接显示开关
+  */
+  const SHOW_COLLABORATOR_LINKS = false;
+</script>
+
+
 <style>
   /*
     全页面行距参数：
@@ -52,10 +60,12 @@
     font-style: normal;
   }
 
+  /* 期刊缩写使用粗体 */
   .journal-venue {
     font-weight: bold;
   }
 
+  /* 会议名称不使用粗体 */
   .conference-venue {
     font-weight: normal;
   }
@@ -65,7 +75,7 @@
     margin-left：
     控制作者姓名与左括号之间的空格
     margin-right：
-    控制右括号与后面的逗号、and 或年份之间的空格
+    控制右括号与后面的逗号、and 或期刊名称之间的空格
   */
   .author-links {
     display: inline-flex;
@@ -140,16 +150,13 @@
 
 
 <!--
-  备用 SVG 图标。
-
+  备用 SVG 图标
   正常情况下优先显示以下 PNG：
-
   assets/icons/Institution_icon.png
   assets/icons/google scholar_icon.png
   assets/icons/researchgate_icon.png
   assets/icons/orcid_icon.png
-
-  只有对应 PNG 加载失败时，才会显示备用 SVG。
+  只有对应 PNG 加载失败时，才会显示备用 SVG
 -->
 <svg
   aria-hidden="true"
@@ -620,12 +627,10 @@
 <script>
   /*
     每位合作者的个人资料链接：
-
     institution：机构个人主页
     scholar：Google Scholar
     researchgate：ResearchGate
     orcid：ORCID
-
     某个链接留空时，对应图标不会显示。
     所有链接都为空时，该作者姓名后不显示括号。
   */
@@ -753,8 +758,8 @@
 
 
   /*
-    GitHub Pages 区分文件名大小写，
-    以下路径必须与仓库中的文件名完全一致。
+    GitHub Pages 区分文件名大小写
+    路径必须与文件名一致
   */
 
   const linkTypes = [
@@ -786,7 +791,7 @@
 
 
   /*
-    创建 PNG 加载失败时使用的备用 SVG。
+    创建 PNG 加载失败时使用的备用 SVG
   */
 
   function createFallbackSvg(symbolId) {
@@ -817,7 +822,7 @@
     );
 
     /*
-      兼容部分旧浏览器。
+      兼容部分旧浏览器
     */
     use.setAttributeNS(
       xlinkNamespace,
@@ -832,10 +837,9 @@
 
 
   /*
-    创建 PNG 图标。
-
-    如果 PNG 不存在、路径错误或加载失败，
-    自动替换为对应的备用 SVG。
+    创建 PNG 图标
+    如果 PNG 不存在、路径错误或加载失败
+    自动替换为对应的备用 SVG
   */
 
   function createProfileIcon(type) {
@@ -848,7 +852,7 @@
     image.setAttribute("aria-hidden", "true");
 
     /*
-      先注册 error 事件，再设置 src。
+      先注册 error 事件，再设置 src
     */
     image.addEventListener(
       "error",
@@ -875,7 +879,7 @@
 
 
   /*
-    创建一个可点击的图标链接。
+    创建一个可点击的图标链接
   */
 
   function createProfileLink(name, type, url) {
@@ -903,7 +907,7 @@
 
 
   /*
-    获取某位合作者已经填写的有效链接。
+    获取某位合作者已经填写的有效链接
   */
 
   function getAvailableLinks(information) {
@@ -919,94 +923,89 @@
 
 
   /*
-    在论文作者姓名后加入图标。
-
-    显示形式：
-
+    只有 SHOW_COLLABORATOR_LINKS 为 true 时
+    才生成作者姓名后的括号和图标
+    true：
     Name (logo , logo , logo) ,
-
-    如果只有一个链接：
-
-    Name (logo) ,
-
-    如果所有链接为空：
-
+    false：
     Name,
   */
 
-  document
-    .querySelectorAll("[data-collaborator]")
-    .forEach(function (author) {
-      const name = author.dataset.collaborator;
-      const information = collaborators[name];
+  if (SHOW_COLLABORATOR_LINKS) {
+    document
+      .querySelectorAll("[data-collaborator]")
+      .forEach(function (author) {
+        const name = author.dataset.collaborator;
+        const information = collaborators[name];
 
-      if (!information) {
-        return;
-      }
-
-      const availableLinks =
-        getAvailableLinks(information);
-
-      /*
-        所有链接都为空时，
-        不显示括号和图标。
-      */
-      if (availableLinks.length === 0) {
-        return;
-      }
-
-      const group =
-        document.createElement("span");
-
-      group.className = "author-links";
-
-      /*
-        添加左括号。
-      */
-      group.appendChild(
-        document.createTextNode("(")
-      );
-
-      availableLinks.forEach(function (type, index) {
-        /*
-          从第二个图标开始，
-          在前面添加带间隔的逗号。
-        */
-        if (index > 0) {
-          const separator =
-            document.createElement("span");
-
-          separator.className =
-            "author-link-separator";
-
-          separator.textContent = ",";
-
-          group.appendChild(separator);
+        if (!information) {
+          return;
         }
 
-        const profileLink =
-          createProfileLink(
-            name,
-            type,
-            information[type.key]
-          );
+        const availableLinks =
+          getAvailableLinks(information);
 
-        group.appendChild(profileLink);
+        /*
+          所有链接为空时
+          不显示括号和图标
+        */
+        if (availableLinks.length === 0) {
+          return;
+        }
+
+        const group =
+          document.createElement("span");
+
+        group.className = "author-links";
+
+        /*
+          添加左括号
+        */
+        group.appendChild(
+          document.createTextNode("(")
+        );
+
+        availableLinks.forEach(function (type, index) {
+          /*
+            从第二个图标开始
+            在前面添加逗号
+          */
+          if (index > 0) {
+            const separator =
+              document.createElement("span");
+
+            separator.className =
+              "author-link-separator";
+
+            separator.textContent = ",";
+
+            group.appendChild(separator);
+          }
+
+          const profileLink =
+            createProfileLink(
+              name,
+              type,
+              information[type.key]
+            );
+
+          group.appendChild(profileLink);
+        });
+
+        /*
+          添加右括号
+        */
+        group.appendChild(
+          document.createTextNode(")")
+        );
+
+        /*
+          将图标组插入作者姓名后面
+        */
+        author.insertAdjacentElement(
+          "afterend",
+          group
+        );
       });
-
-      /*
-        添加右括号。
-      */
-      group.appendChild(
-        document.createTextNode(")")
-      );
-
-      /*
-        将图标组插入作者姓名后面。
-      */
-      author.insertAdjacentElement(
-        "afterend",
-        group
-      );
-    });
+  }
 </script>
