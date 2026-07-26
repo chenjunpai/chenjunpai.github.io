@@ -1,10 +1,260 @@
-<div style="max-width: 900px; margin: 0 auto; padding: 0 10px;">
+<style>
+  /*
+    全页面行距参数：
+    1.25 = 1.25 倍行距
+    可以修改为 1.3、1.4、1.5 等
+  */
+  :root {
+    --page-line-height: 1.25;
+  }
 
-  <h1 align="center" style="margin-top: 40px; margin-bottom: 30px;">
+  .page-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 10px;
+    line-height: var(--page-line-height);
+  }
+
+  /* =========================
+     Publications
+     ========================= */
+
+  .publication-list {
+    list-style: none;
+    padding-left: 0;
+    margin-left: 0;
+  }
+
+  .publication-item {
+    margin-bottom: 1em;
+  }
+
+  /* 只有论文标题属于论文链接 */
+  .publication-title {
+    display: block;
+    line-height: var(--page-line-height);
+  }
+
+  /* 作者行不属于论文标题链接 */
+  .publication-authors {
+    display: block;
+    margin-top: 0.15em;
+    font-family: "Times New Roman", Times, serif;
+    font-style: italic;
+    line-height: var(--page-line-height);
+  }
+
+  /* 作者姓名后面的图标组 */
+  .author-links {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2em;
+    margin-left: 0.12em;
+    font-style: normal;
+    white-space: nowrap;
+    vertical-align: -0.08em;
+  }
+
+  .author-links::before {
+    content: "(";
+  }
+
+  .author-links::after {
+    content: ")";
+  }
+
+  /* =========================
+     Profile icons
+     ========================= */
+
+  .profile-icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    text-decoration: none;
+    line-height: 1;
+  }
+
+  .profile-icon-link:hover {
+    opacity: 0.65;
+  }
+
+  .profile-icon-link:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* PNG 和备用 SVG 使用相同尺寸 */
+  .profile-icon {
+    display: inline-block;
+    width: 0.95em;
+    height: 0.95em;
+    object-fit: contain;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  /* PNG 加载失败时显示的 SVG */
+  .profile-icon-fallback {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* =========================
+     Collaborators
+     ========================= */
+
+  .collaborator-section {
+    margin-top: 35px;
+  }
+
+  .collaborator-list {
+    list-style: none;
+    padding-left: 0;
+    margin-left: 0;
+  }
+
+  .collaborator-item {
+    margin-bottom: 0.8em;
+    line-height: var(--page-line-height);
+  }
+
+  .collaborator-name {
+    font-family: "Times New Roman", Times, serif;
+    font-weight: bold;
+  }
+
+  .collaborator-links {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.8em;
+    margin-left: 0.5em;
+  }
+
+  .collaborator-profile-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    color: inherit;
+  }
+
+  .collaborator-profile-link .profile-icon {
+    width: 0.9em;
+    height: 0.9em;
+  }
+
+  /* =========================
+     Mobile display
+     ========================= */
+
+  @media (max-width: 600px) {
+    .collaborator-links {
+      display: flex;
+      margin-top: 0.25em;
+      margin-left: 0;
+    }
+  }
+</style>
+
+
+<!--
+  备用 SVG 图标。
+
+  正常情况下优先显示以下 PNG：
+
+  assets/icons/Institution_icon.png
+  assets/icons/google scholar_icon.png
+  assets/icons/researchgate_icon.png
+  assets/icons/orcid_icon.png
+
+  只有对应 PNG 加载失败时，才会显示这些 SVG。
+-->
+<svg
+  aria-hidden="true"
+  style="position: absolute; width: 0; height: 0; overflow: hidden;"
+>
+  <!-- Institution -->
+  <symbol id="fallback-institution" viewBox="0 0 24 24">
+    <path d="M3 21h18"></path>
+    <path d="M5 21V9h14v12"></path>
+    <path d="M3 9l9-6 9 6"></path>
+    <path d="M8 12v6"></path>
+    <path d="M12 12v6"></path>
+    <path d="M16 12v6"></path>
+  </symbol>
+
+  <!-- Google Scholar -->
+  <symbol id="fallback-scholar" viewBox="0 0 24 24">
+    <path d="M2 9l10-5 10 5-10 5L2 9z"></path>
+    <path d="M6 11.5V16c2.8 2.7 9.2 2.7 12 0v-4.5"></path>
+    <path d="M22 9v7"></path>
+  </symbol>
+
+  <!-- ResearchGate -->
+  <symbol id="fallback-researchgate" viewBox="0 0 24 24">
+    <circle
+      cx="12"
+      cy="12"
+      r="10"
+      fill="currentColor"
+      stroke="none"
+    ></circle>
+
+    <text
+      x="12"
+      y="14.6"
+      text-anchor="middle"
+      fill="white"
+      stroke="none"
+      font-family="Arial, sans-serif"
+      font-size="7.2"
+      font-weight="bold"
+    >
+      RG
+    </text>
+  </symbol>
+
+  <!-- ORCID -->
+  <symbol id="fallback-orcid" viewBox="0 0 24 24">
+    <circle
+      cx="12"
+      cy="12"
+      r="10"
+      fill="currentColor"
+      stroke="none"
+    ></circle>
+
+    <path
+      d="
+        M8.3 7.4v1.8
+        M8.3 11v5.6
+        M11 11h2.3
+        c2.1 0 3.5 1.1 3.5 2.8
+        s-1.4 2.8-3.5 2.8
+        H11V11z
+      "
+      stroke="white"
+      fill="none"
+      stroke-width="1.7"
+    ></path>
+  </symbol>
+</svg>
+
+
+<div class="page-container">
+
+  <h1 style="margin-top: 40px; margin-bottom: 30px; text-align: center;">
     Junpai Chen（陈钧湃）
   </h1>
 
   <p>Hi! I'm Junpai Chen, you can just call me Pi.</p>
+
   <p>I am still working on this web.</p>
 
   <p>
@@ -27,151 +277,817 @@
     connections.
   </p>
 
+
   <p><strong>Publications and preprints</strong></p>
+
   <p>Latest update: 2026/04/18</p>
 
-  <ul style="list-style: none; padding-left: 0; margin-left: 0;">
 
-    <li style="margin-bottom: 1em;">
-      <a href="https://doi.org/10.1007/s10661-026-15657-8" target="_blank">
-        <span style="display: block;">
-          8. Anthropogenic, biophysical, and climate-driven spatiotemporal dynamics
-          of terrestrial ecosystem carbon sink capacity in the North China Plain
-          region (2005–2024)
-        </span>
-        <span style="display: block; font-style: italic;">
-          with Melese Genete Muluneh, Yuanxun Zhang, Philip K Hopke,
-          Ousseynou Traware and Lijing Wang (2026)
-        </span>
+  <ul class="publication-list">
+
+    <li class="publication-item">
+      <a
+        class="publication-title"
+        href="https://doi.org/10.1007/s10661-026-15657-8"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        8. Anthropogenic, biophysical, and climate-driven spatiotemporal
+        dynamics of terrestrial ecosystem carbon sink capacity in the North
+        China Plain region (2005–2024)
       </a>
+
+      <span class="publication-authors">
+        with
+        <span
+          class="author-name"
+          data-collaborator="Melese Genete Muluneh"
+        >Melese Genete Muluneh</span>,
+        <span
+          class="author-name"
+          data-collaborator="Yuanxun Zhang"
+        >Yuanxun Zhang</span>,
+        <span
+          class="author-name"
+          data-collaborator="Philip K Hopke"
+        >Philip K Hopke</span>,
+        <span
+          class="author-name"
+          data-collaborator="Ousseynou Traware"
+        >Ousseynou Traware</span>
+        and
+        <span
+          class="author-name"
+          data-collaborator="Lijing Wang"
+        >Lijing Wang</span>
+        (2026)
+      </span>
     </li>
 
-    <li style="margin-bottom: 1em;">
-      <a href="https://doi.org/10.1016/j.jes.2026.06.025" target="_blank">
-        <span style="display: block;">
-          7. Carbon footprint of inorganic fertilizer types on major crop
-          production in China: Magnitude, spatiotemporal distribution, and attribution
-        </span>
-        <span style="display: block; font-style: italic;">
-          with Ousseynou Traware, Yuanxun Zhang, Lijing Wang, Philip K Hopke
-          and Melese Genete Muluneh (2026)
-        </span>
+
+    <li class="publication-item">
+      <a
+        class="publication-title"
+        href="https://doi.org/10.1016/j.jes.2026.06.025"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        7. Carbon footprint of inorganic fertilizer types on major crop
+        production in China: Magnitude, spatiotemporal distribution, and
+        attribution
       </a>
+
+      <span class="publication-authors">
+        with
+        <span
+          class="author-name"
+          data-collaborator="Ousseynou Traware"
+        >Ousseynou Traware</span>,
+        <span
+          class="author-name"
+          data-collaborator="Yuanxun Zhang"
+        >Yuanxun Zhang</span>,
+        <span
+          class="author-name"
+          data-collaborator="Lijing Wang"
+        >Lijing Wang</span>,
+        <span
+          class="author-name"
+          data-collaborator="Philip K Hopke"
+        >Philip K Hopke</span>
+        and
+        <span
+          class="author-name"
+          data-collaborator="Melese Genete Muluneh"
+        >Melese Genete Muluneh</span>
+        (2026)
+      </span>
     </li>
 
-    <li style="margin-bottom: 1em;">
-      <a href="https://doi.org/10.1093/jcde/qwaf132" target="_blank">
-        <span style="display: block;">
-          6. Combining machine learning and adaptive large neighbourhood search
-          for optimising urban land use to reduce urban land surface temperature
-        </span>
-        <span style="display: block; font-style: italic;">
-          with Hao Zheng (2026)
-        </span>
+
+    <li class="publication-item">
+      <a
+        class="publication-title"
+        href="https://doi.org/10.1093/jcde/qwaf132"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        6. Combining machine learning and adaptive large neighbourhood search
+        for optimising urban land use to reduce urban land surface temperature
       </a>
+
+      <span class="publication-authors">
+        with
+        <span
+          class="author-name"
+          data-collaborator="Hao Zheng"
+        >Hao Zheng</span>
+        (2026)
+      </span>
     </li>
 
-    <li style="margin-bottom: 1em;">
-      <a href="https://doi.org/10.1515/noise-2025-0021" target="_blank">
-        <span style="display: block;">
-          5. Combining generative adversarial networks with urban noise mapping
-        </span>
-        <span style="display: block; font-style: italic;">
-          with Qiuya Xiang (2025)
-        </span>
+
+    <li class="publication-item">
+      <a
+        class="publication-title"
+        href="https://doi.org/10.1515/noise-2025-0021"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        5. Combining generative adversarial networks with urban noise mapping
       </a>
+
+      <span class="publication-authors">
+        with
+        <span
+          class="author-name"
+          data-collaborator="Qiuya Xiang"
+        >Qiuya Xiang</span>
+        (2025)
+      </span>
     </li>
 
-    <li style="margin-bottom: 1em;">
-      <a href="https://doi.org/10.1016/j.scs.2024.106048" target="_blank">
-        <span style="display: block;">
-          4. Forecasting land surface drought in urban environments based on
-          machine learning model
-        </span>
-        <span style="display: block; font-style: italic;">
-          with Hao Zheng (2025)
-        </span>
+
+    <li class="publication-item">
+      <a
+        class="publication-title"
+        href="https://doi.org/10.1016/j.scs.2024.106048"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        4. Forecasting land surface drought in urban environments based on
+        machine learning model
       </a>
+
+      <span class="publication-authors">
+        with
+        <span
+          class="author-name"
+          data-collaborator="Hao Zheng"
+        >Hao Zheng</span>
+        (2025)
+      </span>
     </li>
 
-    <li style="margin-bottom: 1em;">
-      <a href="https://hdl.handle.net/2031/b3c039e8-ddd2-4f87-bf01-faabf512f23f" target="_blank">
-        <span style="display: block;">
-          3. Resilient public spaces under psychological distress: a closer look
-          at high-density urban streets’ vibrancy in Hong Kong
-        </span>
-        <span style="display: block; font-style: italic;">
-          with Mirna Zordan, Jin Yeu Tsou and Hao Huang (2024)
-        </span>
+
+    <li class="publication-item">
+      <a
+        class="publication-title"
+        href="https://hdl.handle.net/2031/b3c039e8-ddd2-4f87-bf01-faabf512f23f"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        3. Resilient public spaces under psychological distress: a closer look
+        at high-density urban streets’ vibrancy in Hong Kong
       </a>
+
+      <span class="publication-authors">
+        with
+        <span
+          class="author-name"
+          data-collaborator="Mirna Zordan"
+        >Mirna Zordan</span>,
+        <span
+          class="author-name"
+          data-collaborator="Jin Yeu Tsou"
+        >Jin Yeu Tsou</span>
+        and
+        <span
+          class="author-name"
+          data-collaborator="Hao Huang"
+        >Hao Huang</span>
+        (2024)
+      </span>
     </li>
 
-    <li style="margin-bottom: 1em;">
-      <a href="https://doi.org/10.3390/su15043023" target="_blank">
-        <span style="display: block;">
-          2. Assessing the Sustainability of Urban Community Renewal Projects
-          in Southern China Based on a Hybrid MADM Approach
-        </span>
-        <span style="display: block; font-style: italic;">
-          with Yue Chen, Yitong Zhu, Mingyan Xiao, Hongfei Yang,
-          Huaming Huang and Linli Li (2023)
-        </span>
+
+    <li class="publication-item">
+      <a
+        class="publication-title"
+        href="https://doi.org/10.3390/su15043023"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        2. Assessing the Sustainability of Urban Community Renewal Projects
+        in Southern China Based on a Hybrid MADM Approach
       </a>
+
+      <span class="publication-authors">
+        with
+        <span
+          class="author-name"
+          data-collaborator="Yue Chen"
+        >Yue Chen</span>,
+        <span
+          class="author-name"
+          data-collaborator="Yitong Zhu"
+        >Yitong Zhu</span>,
+        <span
+          class="author-name"
+          data-collaborator="Mingyan Xiao"
+        >Mingyan Xiao</span>,
+        <span
+          class="author-name"
+          data-collaborator="Hongfei Yang"
+        >Hongfei Yang</span>,
+        <span
+          class="author-name"
+          data-collaborator="Huaming Huang"
+        >Huaming Huang</span>
+        and
+        <span
+          class="author-name"
+          data-collaborator="Linli Li"
+        >Linli Li</span>
+        (2023)
+      </span>
     </li>
 
-    <li style="margin-bottom: 1em;">
-      <a href="https://doi.org/10.1201/9781003345329-43" target="_blank">
-        <span style="display: block;">
-          1. Urban landscape sustainability and biodiversity: Multidisciplinary
-          collaborative design practice for future urban ecosystems in southern China
-        </span>
-        <span style="display: block; font-style: italic;">
-          with Xiaozhen Liu (2022)
-        </span>
+
+    <li class="publication-item">
+      <a
+        class="publication-title"
+        href="https://doi.org/10.1201/9781003345329-43"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        1. Urban landscape sustainability and biodiversity: Multidisciplinary
+        collaborative design practice for future urban ecosystems in southern
+        China
       </a>
+
+      <span class="publication-authors">
+        with
+        <span
+          class="author-name"
+          data-collaborator="Xiaozhen Liu"
+        >Xiaozhen Liu</span>
+        (2022)
+      </span>
     </li>
 
-    <li style="margin-bottom: 1em;">
-      <a href="https://doi.org/10.1109/ICCTech55650.2022.00022" target="_blank">
-        <span style="display: block;">
-          0. Exploration of Urban Green Infrastructure Design Practice Methodology
-          under Multidisciplinary Collaboration
-        </span>
-        <span style="display: block; font-style: italic;">
-          with Xiaozhen Liu and Huaming Huang (2022)
-        </span>
+
+    <li class="publication-item">
+      <a
+        class="publication-title"
+        href="https://doi.org/10.1109/ICCTech55650.2022.00022"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        0. Exploration of Urban Green Infrastructure Design Practice
+        Methodology under Multidisciplinary Collaboration
       </a>
+
+      <span class="publication-authors">
+        with
+        <span
+          class="author-name"
+          data-collaborator="Xiaozhen Liu"
+        >Xiaozhen Liu</span>
+        and
+        <span
+          class="author-name"
+          data-collaborator="Huaming Huang"
+        >Huaming Huang</span>
+        (2022)
+      </span>
     </li>
 
   </ul>
 
+
+  <!--
+    Collaborators 板块由 JavaScript 自动生成。
+
+    如果所有合作者的链接都是空的，
+    整个 Collaborators 板块不会显示。
+  -->
+  <section
+    id="collaborator-section"
+    class="collaborator-section"
+    hidden
+  >
+    <h2>Collaborators</h2>
+
+    <ul
+      id="collaborator-list"
+      class="collaborator-list"
+    ></ul>
+  </section>
+
+
   <p>
-    If you have any critical comments regarding my work, please do not hesitate
-    to contact me via the email address below:
+    If you have any critical comments regarding my work, please do not
+    hesitate to contact me via the email address below:
   </p>
 
   <p>
     <strong>chenjunpai24@mails.ucas.ac.cn</strong>
   </p>
 
+
   <p>More information:</p>
 
   <ul>
     <li>
-      <a href="https://scholar.google.com/citations?hl=en&user=lGaib1cAAAAJ" target="_blank">
+      <a
+        href="https://scholar.google.com/citations?hl=en&user=lGaib1cAAAAJ"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         My Google Scholar
       </a>
     </li>
+
     <li>
-      <a href="https://www.researchgate.net/profile/Junpai-Chen" target="_blank">
+      <a
+        href="https://www.researchgate.net/profile/Junpai-Chen"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         My ResearchGate
       </a>
     </li>
+
     <li>
-      <a href="https://orcid.org/0000-0001-7808-7933" target="_blank">
+      <a
+        href="https://orcid.org/0000-0001-7808-7933"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         My ORCID
       </a>
     </li>
   </ul>
 
 </div>
+
+
+<script>
+  /*
+    在这里填写每位合作者的真实链接。
+
+    institution：机构个人主页
+    scholar：Google Scholar
+    researchgate：ResearchGate
+    orcid：ORCID
+
+    某个链接留空时，对应图标不会显示。
+    至少填写一个链接后，该合作者才会显示图标，
+    并出现在 Collaborators 板块。
+  */
+
+  const collaborators = {
+    "Hao Zheng": {
+      institution: "https://scholars.cityu.edu.hk/en/persons/hazheng/",
+      scholar: "https://scholar.google.com/citations?user=OEVweuQAAAAJ",
+      researchgate: "https://www.researchgate.net/profile/Hao-Zheng-20",
+      orcid: ""
+    },
+
+    "Qiuya Xiang": {
+      institution: "https://www.uantwerpen.be/en/staff/qiuya-xiang_27203/",
+      scholar: "https://scholar.google.com/citations?user=S-02K4sAAAAJ",
+      researchgate: "https://www.researchgate.net/profile/Qiuya-Xiang-2",
+      orcid: "https://orcid.org/0009-0009-4035-3322"
+    },
+
+    "Melese Genete Muluneh": {
+      institution: "",
+      scholar: "https://scholar.google.com/citations?user=ONt-6qEAAAAJ",
+      researchgate: "https://www.researchgate.net/profile/Melese-Muluneh",
+      orcid: "https://orcid.org/0000-0003-4273-9594"
+    },
+
+    "Yuanxun Zhang": {
+      institution: "https://people.ucas.ac.cn/~yxzhang",
+      scholar: "",
+      researchgate: "https://www.researchgate.net/profile/Yuanxun-Zhang-4",
+      orcid: "https://orcid.org/0000-0002-7970-6086"
+    },
+
+    "Philip K Hopke": {
+      institution: "https://www.clarkson.edu/people/philip-hopke",
+      scholar: "https://scholar.google.com/citations?user=lFuICO4AAAAJ",
+      researchgate: "https://www.researchgate.net/profile/Philip-Hopke",
+      orcid: "https://orcid.org/0000-0003-2367-9661"
+    },
+
+    "Ousseynou Traware": {
+      institution: "",
+      scholar: "",
+      researchgate: "",
+      orcid: "https://orcid.org/0009-0006-4253-3704"
+    },
+
+    "Lijing Wang": {
+      institution: "https://people.ucas.ac.cn/~wanglijing",
+      scholar: "",
+      researchgate: "",
+      orcid: ""
+    },
+
+    "Mirna Zordan": {
+      institution: "https://designschool.sustech.edu.cn/about/team/faculty/544.html",
+      scholar: "https://scholar.google.com/citations?user=cyZF8ZsAAAAJ",
+      researchgate: "https://www.researchgate.net/profile/Mirna-Zordan-2",
+      orcid: "https://orcid.org/0000-0002-8436-2898"
+    },
+
+    "Jin Yeu Tsou": {
+      institution: "https://scholars.cityu.edu.hk/en/persons/jytsou/",
+      scholar: "",
+      researchgate: "https://www.researchgate.net/profile/Jin-Yeu-Tsou",
+      orcid: "https://orcid.org/0000-0002-7682-4327"
+    },
+
+    "Hao Huang": {
+      institution: "https://scholars.cityu.edu.hk/en/persons/hhuang95/",
+      scholar: "https://scholar.google.com/citations?user=E2WPzKgAAAAJ",
+      researchgate: "https://www.researchgate.net/profile/Hao-Huang-59",
+      orcid: "https://orcid.org/0000-0001-9801-5929"
+    },
+
+    "Yue Chen": {
+      institution: "",
+      scholar: "",
+      researchgate: "",
+      orcid: ""
+    },
+
+    "Yitong Zhu": {
+      institution: "",
+      scholar: "",
+      researchgate: "",
+      orcid: ""
+    },
+
+    "Mingyan Xiao": {
+      institution: "",
+      scholar: "",
+      researchgate: "",
+      orcid: ""
+    },
+
+    "Hongfei Yang": {
+      institution: "",
+      scholar: "",
+      researchgate: "",
+      orcid: ""
+    },
+
+    "Huaming Huang": {
+      institution: "",
+      scholar: "",
+      researchgate: "",
+      orcid: ""
+    },
+
+    "Linli Li": {
+      institution: "",
+      scholar: "",
+      researchgate: "",
+      orcid: ""
+    },
+
+    "Xiaozhen Liu": {
+      institution: "",
+      scholar: "",
+      researchgate: "",
+      orcid: ""
+    }
+  };
+
+
+  /*
+    图标路径。
+
+    GitHub Pages 区分文件名大小写，
+    所以这里必须与你仓库里的文件名完全一致：
+
+    assets/icons/Institution_icon.png
+    assets/icons/google scholar_icon.png
+    assets/icons/researchgate_icon.png
+    assets/icons/orcid_icon.png
+  */
+
+  const linkTypes = [
+    {
+      key: "institution",
+      label: "Institutional profile",
+      text: "Institutional profile",
+      png: "assets/icons/Institution_icon.png",
+      fallback: "fallback-institution"
+    },
+    {
+      key: "scholar",
+      label: "Google Scholar",
+      text: "Google Scholar",
+      png: "assets/icons/google scholar_icon.png",
+      fallback: "fallback-scholar"
+    },
+    {
+      key: "researchgate",
+      label: "ResearchGate",
+      text: "ResearchGate",
+      png: "assets/icons/researchgate_icon.png",
+      fallback: "fallback-researchgate"
+    },
+    {
+      key: "orcid",
+      label: "ORCID",
+      text: "ORCID",
+      png: "assets/icons/orcid_icon.png",
+      fallback: "fallback-orcid"
+    }
+  ];
+
+
+  /*
+    创建备用 SVG 图标。
+  */
+
+  function createFallbackSvg(symbolId) {
+    const svgNamespace = "http://www.w3.org/2000/svg";
+    const xlinkNamespace = "http://www.w3.org/1999/xlink";
+
+    const svg = document.createElementNS(
+      svgNamespace,
+      "svg"
+    );
+
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("aria-hidden", "true");
+
+    svg.classList.add(
+      "profile-icon",
+      "profile-icon-fallback"
+    );
+
+    const use = document.createElementNS(
+      svgNamespace,
+      "use"
+    );
+
+    use.setAttribute(
+      "href",
+      "#" + symbolId
+    );
+
+    /*
+      用于兼容部分旧浏览器。
+    */
+    use.setAttributeNS(
+      xlinkNamespace,
+      "xlink:href",
+      "#" + symbolId
+    );
+
+    svg.appendChild(use);
+
+    return svg;
+  }
+
+
+  /*
+    创建 PNG 图标。
+
+    如果 PNG 文件不存在、路径错误或加载失败，
+    自动替换为相应的内嵌 SVG。
+  */
+
+  function createProfileIcon(type) {
+    const image = document.createElement("img");
+
+    image.className = "profile-icon";
+    image.alt = "";
+    image.loading = "lazy";
+    image.decoding = "async";
+    image.setAttribute("aria-hidden", "true");
+
+    /*
+      必须先设置 error 监听器，再设置 src。
+      这样即使图片立即加载失败，也能切换备用 SVG。
+    */
+    image.addEventListener(
+      "error",
+      function () {
+        const fallbackSvg = createFallbackSvg(
+          type.fallback
+        );
+
+        image.replaceWith(fallbackSvg);
+      },
+      {
+        once: true
+      }
+    );
+
+    /*
+      encodeURI 会自动处理文件名中的空格，
+      例如 google scholar_icon.png。
+    */
+    image.src = encodeURI(type.png);
+
+    return image;
+  }
+
+
+  /*
+    创建可点击的个人资料链接。
+  */
+
+  function createProfileLink(
+    name,
+    type,
+    url,
+    showText
+  ) {
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+
+    link.title =
+      name + " — " + type.label;
+
+    link.setAttribute(
+      "aria-label",
+      name + " — " + type.label
+    );
+
+    if (showText) {
+      link.className =
+        "profile-icon-link collaborator-profile-link";
+    } else {
+      link.className = "profile-icon-link";
+    }
+
+    link.appendChild(
+      createProfileIcon(type)
+    );
+
+    /*
+      论文作者行只显示图标。
+      Collaborators 板块显示图标和文字。
+    */
+    if (showText) {
+      const text = document.createElement("span");
+
+      text.textContent = type.text;
+
+      link.appendChild(text);
+    }
+
+    return link;
+  }
+
+
+  /*
+    获取某位合作者已经填写的有效链接。
+  */
+
+  function getAvailableLinks(information) {
+    return linkTypes.filter(function (type) {
+      const url = information[type.key];
+
+      return (
+        typeof url === "string" &&
+        url.trim() !== ""
+      );
+    });
+  }
+
+
+  /*
+    在论文作者姓名后加入图标：
+
+    Author Name
+    (Institution Google Scholar ResearchGate ORCID)
+  */
+
+  document
+    .querySelectorAll("[data-collaborator]")
+    .forEach(function (author) {
+      const name = author.dataset.collaborator;
+      const information = collaborators[name];
+
+      if (!information) {
+        return;
+      }
+
+      const availableLinks =
+        getAvailableLinks(information);
+
+      /*
+        所有链接都为空时，
+        不显示括号和图标。
+      */
+      if (availableLinks.length === 0) {
+        return;
+      }
+
+      const group =
+        document.createElement("span");
+
+      group.className = "author-links";
+
+      availableLinks.forEach(function (type) {
+        const profileLink = createProfileLink(
+          name,
+          type,
+          information[type.key],
+          false
+        );
+
+        group.appendChild(profileLink);
+      });
+
+      author.insertAdjacentElement(
+        "afterend",
+        group
+      );
+    });
+
+
+  /*
+    自动生成 Collaborators 板块。
+  */
+
+  const collaboratorSection =
+    document.getElementById(
+      "collaborator-section"
+    );
+
+  const collaboratorList =
+    document.getElementById(
+      "collaborator-list"
+    );
+
+  let displayedCollaborators = 0;
+
+  Object.entries(collaborators).forEach(
+    function (entry) {
+      const name = entry[0];
+      const information = entry[1];
+
+      const availableLinks =
+        getAvailableLinks(information);
+
+      /*
+        没有填写任何链接的合作者不显示。
+      */
+      if (availableLinks.length === 0) {
+        return;
+      }
+
+      displayedCollaborators += 1;
+
+      const item =
+        document.createElement("li");
+
+      item.className = "collaborator-item";
+
+      const nameElement =
+        document.createElement("span");
+
+      nameElement.className =
+        "collaborator-name";
+
+      nameElement.textContent = name;
+
+      const linksElement =
+        document.createElement("span");
+
+      linksElement.className =
+        "collaborator-links";
+
+      availableLinks.forEach(function (type) {
+        const profileLink = createProfileLink(
+          name,
+          type,
+          information[type.key],
+          true
+        );
+
+        linksElement.appendChild(profileLink);
+      });
+
+      item.appendChild(nameElement);
+      item.appendChild(linksElement);
+
+      collaboratorList.appendChild(item);
+    }
+  );
+
+
+  /*
+    至少有一位合作者填写链接时，
+    才显示整个 Collaborators 板块。
+  */
+
+  if (displayedCollaborators > 0) {
+    collaboratorSection.hidden = false;
+  }
+</script>
