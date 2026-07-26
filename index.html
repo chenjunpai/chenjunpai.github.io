@@ -45,6 +45,23 @@
   }
 
   /*
+    期刊和会议名称本身不使用斜体。
+    期刊缩写通过 strong 标签显示为粗体。
+  */
+  .publication-venue {
+    font-family: "Times New Roman", Times, serif;
+    font-style: normal;
+  }
+
+  .journal-venue {
+    font-weight: bold;
+  }
+
+  .conference-venue {
+    font-weight: normal;
+  }
+
+  /*
     作者姓名后面的图标组。
 
     margin-left：
@@ -64,7 +81,7 @@
   }
 
   /*
-    图标后面的逗号与前一个图标之间留空格。
+    图标后的逗号与前一个图标之间留空格。
   */
   .author-link-separator {
     display: inline-block;
@@ -247,6 +264,7 @@
 
   <ul class="publication-list">
 
+    <!-- Publication 8 -->
     <li class="publication-item">
       <a
         class="publication-title"
@@ -281,12 +299,16 @@
         <span
           class="author-name"
           data-collaborator="Lijing Wang"
-        >Lijing Wang</span>
+        >Lijing Wang</span>,
+        <strong class="publication-venue journal-venue">
+          Environ. Monit. Assess.
+        </strong>
         (2026)
       </span>
     </li>
 
 
+    <!-- Publication 7 -->
     <li class="publication-item">
       <a
         class="publication-title"
@@ -321,12 +343,16 @@
         <span
           class="author-name"
           data-collaborator="Melese Genete Muluneh"
-        >Melese Genete Muluneh</span>
+        >Melese Genete Muluneh</span>,
+        <strong class="publication-venue journal-venue">
+          J. Environ. Sci.
+        </strong>
         (2026)
       </span>
     </li>
 
 
+    <!-- Publication 6 -->
     <li class="publication-item">
       <a
         class="publication-title"
@@ -343,12 +369,16 @@
         <span
           class="author-name"
           data-collaborator="Hao Zheng"
-        >Hao Zheng</span>
+        >Hao Zheng</span>,
+        <strong class="publication-venue journal-venue">
+          J. Comput. Des. Eng.
+        </strong>
         (2026)
       </span>
     </li>
 
 
+    <!-- Publication 5 -->
     <li class="publication-item">
       <a
         class="publication-title"
@@ -364,12 +394,16 @@
         <span
           class="author-name"
           data-collaborator="Qiuya Xiang"
-        >Qiuya Xiang</span>
+        >Qiuya Xiang</span>,
+        <strong class="publication-venue journal-venue">
+          Noise Mapp.
+        </strong>
         (2025)
       </span>
     </li>
 
 
+    <!-- Publication 4 -->
     <li class="publication-item">
       <a
         class="publication-title"
@@ -386,12 +420,16 @@
         <span
           class="author-name"
           data-collaborator="Hao Zheng"
-        >Hao Zheng</span>
+        >Hao Zheng</span>,
+        <strong class="publication-venue journal-venue">
+          Sustain. Cities Soc.
+        </strong>
         (2025)
       </span>
     </li>
 
 
+    <!-- Publication 3: Conference paper -->
     <li class="publication-item">
       <a
         class="publication-title"
@@ -417,12 +455,17 @@
         <span
           class="author-name"
           data-collaborator="Hao Huang"
-        >Hao Huang</span>
+        >Hao Huang</span>,
+        <span class="publication-venue conference-venue">
+          International Conference on Changing Cities VI:
+          Spatial, Design, Landscape, Heritage &amp; Socio-economic Dimensions
+        </span>
         (2024)
       </span>
     </li>
 
 
+    <!-- Publication 2 -->
     <li class="publication-item">
       <a
         class="publication-title"
@@ -460,12 +503,16 @@
         <span
           class="author-name"
           data-collaborator="Linli Li"
-        >Linli Li</span>
+        >Linli Li</span>,
+        <strong class="publication-venue journal-venue">
+          Sustainability
+        </strong>
         (2023)
       </span>
     </li>
 
 
+    <!-- Publication 1: Conference proceedings chapter -->
     <li class="publication-item">
       <a
         class="publication-title"
@@ -483,12 +530,17 @@
         <span
           class="author-name"
           data-collaborator="Xiaozhen Liu"
-        >Xiaozhen Liu</span>
+        >Xiaozhen Liu</span>,
+        <span class="publication-venue conference-venue">
+          3rd International Conference on Urban Engineering and Management
+          Science (ICUEMS 2022)
+        </span>
         (2022)
       </span>
     </li>
 
 
+    <!-- Publication 0: Conference paper -->
     <li class="publication-item">
       <a
         class="publication-title"
@@ -510,7 +562,10 @@
         <span
           class="author-name"
           data-collaborator="Huaming Huang"
-        >Huaming Huang</span>
+        >Huaming Huang</span>,
+        <span class="publication-venue conference-venue">
+          2022 International Conference on Computer Technologies (ICCTech)
+        </span>
         (2022)
       </span>
     </li>
@@ -852,9 +907,6 @@
 
   /*
     获取某位合作者已经填写的有效链接。
-
-    注意：
-    这里必须是 /* 开头，而不能只写一个 /。
   */
 
   function getAvailableLinks(information) {
